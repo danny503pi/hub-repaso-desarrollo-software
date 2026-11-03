@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#070a15">
+    <meta name="description" content="HUB educativo de repaso para 3.º de Desarrollo de Software.">
+    <title>HUB de Repaso | 3.º Desarrollo de Software</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script type="module" src="js/main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+    <header class="site-header">
+      <nav class="navigation container" aria-label="Navegación principal">
+        <a class="brand" href="#inicio" aria-label="HUB de Repaso, inicio">
+          <span class="brand-mark" aria-hidden="true">H</span>
+          <span>HUB <span class="brand-light">de Repaso</span></span>
+        </a>
+        <div class="nav-links">
+          <a href="#inicio">Inicio</a>
+          <a href="#modulos">Módulos</a>
+          <a href="#acerca">Acerca del HUB</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="contenido">
+      <section class="hero container" id="inicio" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> RECURSOS PARA APRENDER Y PRACTICAR</p>
+          <h1 id="hero-title">Tu espacio para <span>repasar</span> y avanzar.</h1>
+          <p class="hero-description">
+            Explora los módulos de 3.º de Desarrollo de Software, consulta sus recursos y pon a prueba lo que sabes.
+          </p>
+        </div>
+        <div class="hero-decoration" aria-hidden="true">
+          <span class="decoration-orbit orbit-one"></span>
+          <span class="decoration-orbit orbit-two"></span>
+          <span class="decoration-core">&lt;/&gt;</span>
+        </div>
+      </section>
+
+      <section class="module-section container" id="modulos" aria-labelledby="modules-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">BIBLIOTECA DE CONTENIDOS</p>
+            <h2 id="modules-title">Encuentra tu próximo tema</h2>
+          </div>
+          <p class="section-note">Selecciona un módulo para ver su ficha y practicar.</p>
+        </div>
+
+        <div class="toolbar" role="search">
+          <label class="search-field">
+            <span class="visually-hidden">Buscar por módulo, programa o herramienta</span>
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"></circle>
+              <path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+            </svg>
+            <input id="module-search" type="search" placeholder="Buscar módulo, programa o herramienta..." autocomplete="off">
+          </label>
+          <div class="filter-group" role="group" aria-label="Filtrar por docente">
+            <button class="filter-button is-active" type="button" data-teacher="Todos" aria-pressed="true">Todos</button>
+            <button class="filter-button" type="button" data-teacher="Javier Mineros" aria-pressed="false">Javier Mineros</button>
+            <button class="filter-button" type="button" data-teacher="Arcides Canales" aria-pressed="false">Arcides Canales</button>
+          </div>
+        </div>
+
+        <p class="results-count" id="results-count" aria-live="polite"></p>
+        <div class="module-grid" id="module-grid" aria-live="polite"></div>
+      </section>
+
+      <section class="about-section container" id="acerca" aria-labelledby="about-title">
+        <div class="about-icon" aria-hidden="true">✦</div>
+        <div>
+          <p class="eyebrow">APRENDIZAJE A TU RITMO</p>
+          <h2 id="about-title">Un HUB creado para conectar teoría y práctica.</h2>
+          <p>Revisa los contenidos de clase, encuentra herramientas útiles y comprueba tus conocimientos con actividades breves.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-content">
+        <a class="brand footer-brand" href="#inicio">
+          <span class="brand-mark" aria-hidden="true">H</span>
+          <span>HUB <span class="brand-light">de Repaso</span></span>
+        </a>
+        <p>3.º Desarrollo de Software <span aria-hidden="true">·</span> Material educativo de apoyo</p>
+        <a class="back-to-top" href="#inicio">Volver arriba ↑</a>
+      </div>
+    </footer>
+
+    <dialog class="module-dialog" id="module-dialog" aria-labelledby="dialog-title">
+      <div class="dialog-shell">
+        <header class="dialog-header">
+          <div>
+            <p class="eyebrow" id="dialog-teacher"></p>
+            <h2 id="dialog-title"></h2>
+            <p class="dialog-summary" id="dialog-summary"></p>
+          </div>
+          <button class="icon-button" id="dialog-close" type="button" aria-label="Cerrar ficha del módulo">×</button>
+        </header>
+        <div class="dialog-body">
+          <div class="tab-list" role="tablist" aria-label="Contenido del módulo">
+            <button class="tab-button is-active" id="tab-overview" type="button" role="tab" aria-selected="true" aria-controls="tab-panel" data-tab="overview">Aprendizajes</button>
+            <button class="tab-button" id="tab-instruments" type="button" role="tab" aria-selected="false" aria-controls="tab-panel" data-tab="instruments" tabindex="-1">Instrumentos</button>
+            <button class="tab-button" id="tab-programs" type="button" role="tab" aria-selected="false" aria-controls="tab-panel" data-tab="programs" tabindex="-1">Programas</button>
+            <button class="tab-button" id="tab-tools" type="button" role="tab" aria-selected="false" aria-controls="tab-panel" data-tab="tools" tabindex="-1">Herramientas</button>
+            <button class="tab-button" id="tab-resources" type="button" role="tab" aria-selected="false" aria-controls="tab-panel" data-tab="resources" tabindex="-1">Recursos</button>
+            <button class="tab-button" id="tab-evidence" type="button" role="tab" aria-selected="false" aria-controls="tab-panel" data-tab="evidence" tabindex="-1">Evidencias</button>
+            <button class="tab-button" id="tab-quiz" type="button" role="tab" aria-selected="false" aria-controls="tab-panel" data-tab="quiz" tabindex="-1">Quiz</button>
+          </div>
+          <section class="tab-panel" id="tab-panel" role="tabpanel" aria-labelledby="tab-overview" tabindex="0"></section>
+        </div>
+      </div>
+    </dialog>
+
+    <template id="module-card-template">
+      <article class="module-card">
+        <div class="card-topline">
+          <span class="card-category"></span>
+          <span class="card-index"></span>
+        </div>
+        <h3 class="card-title"></h3>
+        <p class="card-summary"></p>
+        <div class="card-meta">
+          <span class="card-teacher"></span>
+          <span class="card-tool-count"></span>
+        </div>
+        <button class="card-link" type="button">
+          Explorar módulo <span aria-hidden="true">↗</span>
+        </button>
+      </article>
+    </template>
+  </body>
+</html>
