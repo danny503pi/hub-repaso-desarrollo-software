@@ -20,8 +20,11 @@ Portal educativo estático del Instituto Nacional Cantón Lourdes (INDEL) para o
 
 | Módulo | Docente | Responsable del equipo | Estado |
 |---|---|---|---|
-| HTML5 semántico y accesibilidad | Javier Mineros | Nombre | En desarrollo |
-| CSS3 y diseño responsivo | Javier Mineros | Nombre | En desarrollo |
+| Módulo 3.0: Orientación de estudiantes al proceso educativo del tercer año | Javier Mineros | Nombre | En desarrollo |
+| Módulo 3.2: Mantenimiento y aseguramiento de la operación del sistema informático | Javier Mineros | Nombre | En desarrollo |
+| Módulo 3.3: Administración de Bases de Datos | Javier Mineros | Nombre | En desarrollo |
+| Módulo 3.4: Elaboración de documentación de Sistemas informáticos | Javier Mineros | Nombre | En desarrollo |
+| Módulo 3.8: Proyecto innovador de Desarrollo de Software | Javier Mineros | Nombre | En desarrollo |
 | JavaScript y manipulación del DOM | Arcides Canales | Nombre | En desarrollo |
 | Git, GitHub y trabajo colaborativo | Arcides Canales | Nombre | En desarrollo |
 
