@@ -1,6 +1,6 @@
-# HUB de Repaso — 3.º Desarrollo de Software
+# HUB de Repaso — 3.º Desarrollo de Software «B»
 
-Sitio web estático educativo para organizar contenidos, herramientas, recursos y actividades de repaso de 3.º de Desarrollo de Software. Está construido con HTML5 semántico, CSS3 y JavaScript vainilla, sin frameworks ni dependencias de ejecución.
+Portal educativo estático del Instituto Nacional Cantón Lourdes (INDEL) para organizar los contenidos, instrumentos, recursos y actividades de repaso de 3.º Desarrollo de Software «B». La versión v0.4 incorpora fichas completas por módulo, filtros, búsqueda y quizzes interactivos. Está construido con HTML5 semántico, CSS3 y JavaScript vainilla, sin frameworks ni dependencias de ejecución.
 
 ## Sitio publicado
 
@@ -20,10 +20,26 @@ Sitio web estático educativo para organizar contenidos, herramientas, recursos 
 
 | Módulo | Docente | Responsable del equipo | Estado |
 |---|---|---|---|
-| HTML5 semántico y accesibilidad | Javier Mineros | Nombre | Pendiente |
-| CSS3 y diseño responsivo | Javier Mineros | Nombre | Pendiente |
-| JavaScript y manipulación del DOM | Arcides Canales | Nombre | Pendiente |
-| Git, GitHub y trabajo colaborativo | Arcides Canales | Nombre | Pendiente |
+| HTML5 semántico y accesibilidad | Javier Mineros | Nombre | En desarrollo |
+| CSS3 y diseño responsivo | Javier Mineros | Nombre | En desarrollo |
+| JavaScript y manipulación del DOM | Arcides Canales | Nombre | En desarrollo |
+| Git, GitHub y trabajo colaborativo | Arcides Canales | Nombre | En desarrollo |
+
+Actualicen los nombres y estados cuando el equipo confirme el reparto definitivo.
+
+## Fichas y evidencias
+
+Los módulos están definidos en `data/modulos.js`. Cada ficha incluye tres aprendizajes clave, instrumentos, programas, herramientas, recursos, evidencias y preguntas de opción múltiple. Los enlaces de recursos se verificaron durante la preparación de la versión v0.4.
+
+Los enlaces de evidencia apuntan inicialmente al repositorio del HUB y sus títulos indican que la entrega del equipo está pendiente. Sustituyan esos enlaces por las URL reales de las páginas, documentos o repositorios que produzca el grupo.
+
+## Control de versiones
+
+- `main` contiene la versión estable que se publica en GitHub Pages.
+- Trabajen cada cambio en una rama descriptiva, por ejemplo `feat/ficha-html`.
+- Guarden cambios relacionados en commits pequeños con mensajes claros.
+- Revisen e integren los cambios mediante un pull request hacia `main`.
+- Cada push o integración en `main` activa el despliegue automático de Pages.
 
 ## Estructura del proyecto
 
@@ -36,6 +52,9 @@ Sitio web estático educativo para organizar contenidos, herramientas, recursos 
 │   └── modulos.js
 ├── js/
 │   └── main.js
+├── .github/
+│   └── workflows/
+│       └── pages.yml
 └── README.md
 ```
 
@@ -54,4 +73,4 @@ Los módulos JavaScript usan `import`, por lo que la página debe servirse media
 
 ## Publicación en GitHub Pages
 
-En GitHub, abre **Settings → Pages**, selecciona la rama principal y la carpeta raíz (`/root`) como origen de publicación. Guarda los cambios y coloca la URL resultante en la sección **Sitio publicado** de este documento.
+GitHub Pages se configura y despliega mediante el workflow `.github/workflows/pages.yml`. Cada actualización de `main` genera una nueva publicación.

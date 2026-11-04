@@ -12,9 +12,70 @@ const dialogTitle = document.querySelector("#dialog-title");
 const dialogSummary = document.querySelector("#dialog-summary");
 const tabPanel = document.querySelector("#tab-panel");
 const tabButtons = [...document.querySelectorAll(".tab-button")];
+const validTeachers = new Set(["Javier Mineros", "Arcides Canales"]);
 
 let activeTeacher = "Todos";
 let activeModule = null;
+
+function assertModuleData(modules) {
+  if (!Array.isArray(modules) || modules.length === 0) {
+    throw new TypeError("modulosData debe contener al menos un módulo.");
+  }
+
+  const ids = new Set();
+  modules.forEach((module) => {
+    if (!Number.isInteger(module.id) || ids.has(module.id)) {
+      throw new TypeError(`El módulo "${module.nombre}" debe tener un id numérico único.`);
+    }
+    ids.add(module.id);
+
+    if (!validTeachers.has(module.docente)) {
+      throw new TypeError(`Docente no válido en el módulo "${module.nombre}".`);
+    }
+
+    ["nombre", "resumen"].forEach((field) => {
+      if (typeof module[field] !== "string" || !module[field].trim()) {
+        throw new TypeError(`El módulo ${module.id} debe incluir "${field}".`);
+      }
+    });
+
+    ["aprendizajes", "instrumentos", "programas", "herramientas", "recursos", "evidencias", "quiz"]
+      .forEach((field) => {
+        if (!Array.isArray(module[field])) {
+          throw new TypeError(`El módulo "${module.nombre}" debe incluir el array "${field}".`);
+        }
+      });
+
+    if (module.aprendizajes.length !== 3) {
+      throw new TypeError(`El módulo "${module.nombre}" debe incluir tres aprendizajes clave.`);
+    }
+
+    [...module.recursos, ...module.evidencias].forEach(({ titulo, url }) => {
+      let parsedUrl;
+      try {
+        parsedUrl = new URL(url);
+      } catch {
+        throw new TypeError(`URL no válida en los enlaces del módulo "${module.nombre}".`);
+      }
+      if (!titulo || !["http:", "https:"].includes(parsedUrl.protocol)) {
+        throw new TypeError(`Enlace no válido en los recursos o evidencias de "${module.nombre}".`);
+      }
+    });
+
+    module.quiz.forEach((question) => {
+      if (
+        !question.pregunta
+        || !Array.isArray(question.opciones)
+        || !Number.isInteger(question.correcta)
+        || question.correcta < 0
+        || question.correcta >= question.opciones.length
+        || !question.explicacion
+      ) {
+        throw new TypeError(`Pregunta de quiz no válida en el módulo "${module.nombre}".`);
+      }
+    });
+  });
+}
 
 function normalizeText(value) {
   return value
@@ -61,9 +122,13 @@ function renderModules() {
     card.querySelector(".card-summary").textContent = module.resumen;
     card.querySelector(".card-teacher").textContent = module.docente;
     card.querySelector(".card-tool-count").textContent = `${module.herramientas.length} herramientas`;
+
     const openButton = card.querySelector(".card-link");
     openButton.setAttribute("aria-label", `Explorar módulo: ${module.nombre}`);
     openButton.addEventListener("click", () => openModule(module));
+    card.addEventListener("click", (event) => {
+      if (!event.target.closest("button, a")) openModule(module);
+    });
     moduleGrid.append(fragment);
   });
 }
@@ -78,19 +143,19 @@ function renderList(title, items) {
   tabPanel.replaceChildren(section);
 }
 
-function renderResources(resources) {
+function renderLinkedItems(title, items, className, linkLabel) {
   const section = document.createElement("div");
-  section.append(createTextElement("h3", "Recursos para profundizar"));
+  section.append(createTextElement("h3", title));
   const list = document.createElement("div");
-  list.className = "resource-list";
-  resources.forEach(({ titulo, url }) => {
+  list.className = className;
+  items.forEach(({ titulo, url }) => {
     const link = document.createElement("a");
     link.className = "resource-link";
     link.href = url;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
     link.append(createTextElement("span", titulo), createTextElement("span", "↗"));
-    link.setAttribute("aria-label", `${titulo} (se abre en una pestaña nueva)`);
+    link.setAttribute("aria-label", `${linkLabel}: ${titulo} (se abre en una pestaña nueva)`);
     list.append(link);
   });
   section.append(list);
@@ -104,8 +169,7 @@ function renderQuiz(questions) {
   questions.forEach((question, questionIndex) => {
     const fieldset = document.createElement("fieldset");
     fieldset.className = "quiz-question";
-    const legend = createTextElement("legend", `${questionIndex + 1}. ${question.pregunta}`);
-    fieldset.append(legend);
+    fieldset.append(createTextElement("legend", `${questionIndex + 1}. ${question.pregunta}`));
 
     const feedback = document.createElement("p");
     feedback.className = "quiz-feedback";
@@ -119,8 +183,8 @@ function renderQuiz(questions) {
       input.name = `quiz-${activeModule.id}-${questionIndex}`;
       input.value = String(optionIndex);
       input.addEventListener("change", () => {
-        const isCorrect = optionIndex === question.respuesta;
-        feedback.textContent = `${isCorrect ? "Correcto." : "No es correcto."} ${question.explicacion}`;
+        const isCorrect = optionIndex === question.correcta;
+        feedback.textContent = `${isCorrect ? "Correcto." : "Incorrecto."} ${question.explicacion}`;
         feedback.className = `quiz-feedback ${isCorrect ? "is-correct" : "is-incorrect"}`;
       });
       label.append(input, document.createTextNode(option));
@@ -136,16 +200,19 @@ function renderQuiz(questions) {
 
 function renderTab(tabName) {
   if (!activeModule) return;
+
   const tabContent = {
-    overview: () => renderList("Al finalizar este módulo podrás...", activeModule.aprendizajes),
-    instruments: () => renderList("Instrumentos de trabajo", activeModule.instrumentos),
-    programs: () => renderList("Programas", activeModule.programas),
+    overview: () => renderList("Tres aprendizajes clave", activeModule.aprendizajes),
+    instruments: () => renderList("Guías e instrumentos de evaluación", activeModule.instrumentos),
+    programs: () => renderList("Programas utilizados", activeModule.programas),
     tools: () => renderList("Herramientas y conceptos", activeModule.herramientas),
-    resources: () => renderResources(activeModule.recursos),
-    evidence: () => renderList("Evidencias de aprendizaje", activeModule.evidencias),
+    resources: () => renderLinkedItems("Recursos para profundizar", activeModule.recursos, "resource-list", "Recurso"),
+    evidence: () => renderLinkedItems("Evidencias del módulo", activeModule.evidencias, "evidence-list", "Evidencia"),
     quiz: () => renderQuiz(activeModule.quiz)
   };
-  tabContent[tabName]();
+  const renderContent = tabContent[tabName];
+  if (!renderContent) throw new RangeError(`Pestaña de módulo no reconocida: ${tabName}`);
+  renderContent();
 }
 
 function selectTab(selectedButton) {
@@ -172,6 +239,7 @@ function closeDialog() {
   if (dialog.open) dialog.close();
 }
 
+assertModuleData(modulosData);
 searchInput.addEventListener("input", renderModules);
 
 filterButtons.forEach((button) => {
