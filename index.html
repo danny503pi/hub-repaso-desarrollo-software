@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#070a15">
+    <meta name="theme-color" content="#070a15" id="theme-color-meta">
     <meta name="description" content="HUB educativo de repaso para 3.º Desarrollo de Software «B» del Instituto Nacional Cantón Lourdes.">
     <title>HUB 3.º DS «B» | INDEL</title>
     <link rel="stylesheet" href="css/styles.css">
@@ -23,6 +23,10 @@
           <a href="#modulos">Módulos</a>
           <a href="#acerca">Acerca del HUB</a>
         </div>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Cambiar a tema claro">
+          <span class="theme-icon" aria-hidden="true">☀</span>
+          <span class="theme-label">Tema claro</span>
+        </button>
       </nav>
     </header>
 
@@ -45,7 +49,7 @@
       <section class="module-section container" id="modulos" aria-labelledby="modules-title">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">HUB DE REPASO · VERSIÓN 0.4</p>
+            <p class="eyebrow">HUB DE REPASO · VERSIÓN 1.0</p>
             <h2 id="modules-title">Encuentra tu próximo tema</h2>
           </div>
           <p class="section-note">Selecciona un módulo para ver su ficha y practicar.</p>
@@ -67,8 +71,20 @@
           </div>
         </div>
 
+        <section class="progress-panel" aria-labelledby="progress-title">
+          <div class="progress-copy">
+            <div>
+              <p class="eyebrow">TU AVANCE</p>
+              <h3 id="progress-title">Progreso de repaso</h3>
+            </div>
+            <p class="progress-label" id="progress-label" aria-live="polite">0 de 9 módulos repasados</p>
+          </div>
+          <progress class="progress-bar" id="progress-bar" max="9" value="0" aria-label="Progreso global de repaso">0%</progress>
+        </section>
+
         <p class="results-count" id="results-count" aria-live="polite"></p>
         <div class="module-grid" id="module-grid" aria-live="polite"></div>
+        <p class="site-alert" id="site-alert" role="status" aria-live="polite" hidden></p>
       </section>
 
       <section class="about-section container" id="acerca" aria-labelledby="about-title">
@@ -100,7 +116,10 @@
             <h2 id="dialog-title"></h2>
             <p class="dialog-summary" id="dialog-summary"></p>
           </div>
-          <button class="icon-button" id="dialog-close" type="button" aria-label="Cerrar ficha del módulo">×</button>
+          <div class="dialog-actions">
+            <button class="review-toggle" id="review-toggle" type="button" aria-pressed="false">Marcar como repasado</button>
+            <button class="icon-button" id="dialog-close" type="button" aria-label="Cerrar ficha del módulo">×</button>
+          </div>
         </header>
         <div class="dialog-body">
           <div class="tab-list" role="tablist" aria-label="Contenido del módulo">
@@ -129,6 +148,7 @@
           <span class="card-teacher"></span>
           <span class="card-tool-count"></span>
         </div>
+        <p class="card-review-status" hidden></p>
         <button class="card-link" type="button">
           Explorar módulo <span aria-hidden="true">↗</span>
         </button>

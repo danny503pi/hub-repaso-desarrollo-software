@@ -5,21 +5,75 @@ const cardTemplate = document.querySelector("#module-card-template");
 const searchInput = document.querySelector("#module-search");
 const resultsCount = document.querySelector("#results-count");
 const filterButtons = [...document.querySelectorAll(".filter-button")];
+const progressBar = document.querySelector("#progress-bar");
+const progressLabel = document.querySelector("#progress-label");
+const siteAlert = document.querySelector("#site-alert");
+const themeToggle = document.querySelector("#theme-toggle");
+const themeIcon = themeToggle.querySelector(".theme-icon");
+const themeLabel = themeToggle.querySelector(".theme-label");
+const themeColorMeta = document.querySelector("#theme-color-meta");
 const dialog = document.querySelector("#module-dialog");
 const dialogClose = document.querySelector("#dialog-close");
 const dialogTeacher = document.querySelector("#dialog-teacher");
 const dialogTitle = document.querySelector("#dialog-title");
 const dialogSummary = document.querySelector("#dialog-summary");
+const reviewToggle = document.querySelector("#review-toggle");
 const tabPanel = document.querySelector("#tab-panel");
 const tabButtons = [...document.querySelectorAll(".tab-button")];
 const validTeachers = new Set(["Javier Mineros", "Arcides Canales"]);
+const progressStorageKey = "indel-hub-reviewed-v1";
+const themeStorageKey = "indel-hub-theme-v1";
+const moduleIds = new Set(modulosData.map(({ id }) => id));
+const systemTheme = window.matchMedia("(prefers-color-scheme: light)");
 
 let activeTeacher = "Todos";
 let activeModule = null;
+let reviewedModuleIds = loadReviewedModules();
+let hasThemeOverride = false;
+
+function showAlert(message) {
+  siteAlert.textContent = message;
+  siteAlert.hidden = false;
+}
+
+function readStorage(key) {
+  try {
+    return window.localStorage.getItem(key);
+  } catch (error) {
+    showAlert(`El navegador no permitió leer tus preferencias guardadas. ${error.message}`);
+    return null;
+  }
+}
+
+function writeStorage(key, value, description) {
+  try {
+    window.localStorage.setItem(key, value);
+    return true;
+  } catch (error) {
+    showAlert(`No se pudo guardar ${description} en este navegador. El cambio se conserva mientras la página permanezca abierta. ${error.message}`);
+    return false;
+  }
+}
+
+function loadReviewedModules() {
+  const storedValue = readStorage(progressStorageKey);
+  if (storedValue === null) return new Set();
+
+  try {
+    const storedIds = JSON.parse(storedValue);
+    if (!Array.isArray(storedIds) || storedIds.some((id) => !Number.isInteger(id) || !moduleIds.has(id))) {
+      throw new TypeError("El formato del progreso guardado no es válido.");
+    }
+    return new Set(storedIds);
+  } catch (error) {
+    showAlert(`No se pudo recuperar el progreso guardado; se iniciará un avance vacío. ${error.message}`);
+    return new Set();
+  }
+}
 
 function assertModuleData(modules) {
-  if (!Array.isArray(modules) || modules.length === 0) {
-    throw new TypeError("modulosData debe contener al menos un módulo.");
+  if (!Array.isArray(modules) || modules.length !== 9) {
+    throw new TypeError("modulosData debe contener exactamente los nueve módulos oficiales.");
   }
 
   const ids = new Set();
@@ -41,13 +95,13 @@ function assertModuleData(modules) {
 
     ["aprendizajes", "instrumentos", "programas", "herramientas", "recursos", "evidencias", "quiz"]
       .forEach((field) => {
-        if (!Array.isArray(module[field])) {
+        if (!Array.isArray(module[field]) || module[field].length === 0) {
           throw new TypeError(`El módulo "${module.nombre}" debe incluir el array "${field}".`);
         }
       });
 
-    if (module.aprendizajes.length !== 3) {
-      throw new TypeError(`El módulo "${module.nombre}" debe incluir tres aprendizajes clave.`);
+    if (module.aprendizajes.length !== 3 || module.quiz.length < 3) {
+      throw new TypeError(`El módulo "${module.nombre}" debe incluir tres aprendizajes y al menos tres preguntas.`);
     }
 
     [...module.recursos, ...module.evidencias].forEach(({ titulo, url }) => {
@@ -91,6 +145,37 @@ function createTextElement(tagName, text, className) {
   return element;
 }
 
+function renderProgress() {
+  const reviewedCount = reviewedModuleIds.size;
+  const percentage = Math.round((reviewedCount / modulosData.length) * 100);
+  progressBar.max = modulosData.length;
+  progressBar.value = reviewedCount;
+  progressBar.textContent = `${percentage}%`;
+  progressBar.setAttribute(
+    "aria-label",
+    `${percentage}% del repaso completado: ${reviewedCount} de ${modulosData.length} módulos`
+  );
+  progressLabel.textContent = `${reviewedCount} de ${modulosData.length} módulos repasados · ${percentage}%`;
+}
+
+function syncCardReviewState(module) {
+  const card = moduleGrid.querySelector(`[data-module-id="${module.id}"]`);
+  if (!card) return;
+  const status = card.querySelector(".card-review-status");
+  const isReviewed = reviewedModuleIds.has(module.id);
+  status.hidden = !isReviewed;
+  status.textContent = isReviewed ? "✓ Módulo repasado" : "";
+  card.classList.toggle("is-reviewed", isReviewed);
+}
+
+function updateReviewState() {
+  const isReviewed = reviewedModuleIds.has(activeModule.id);
+  reviewToggle.setAttribute("aria-pressed", String(isReviewed));
+  reviewToggle.textContent = isReviewed ? "✓ Repasado · Quitar marca" : "Marcar como repasado";
+  syncCardReviewState(activeModule);
+  renderProgress();
+}
+
 function renderModules() {
   const query = normalizeText(searchInput.value.trim());
   const filteredModules = modulosData.filter((module) => {
@@ -100,7 +185,7 @@ function renderModules() {
   });
 
   moduleGrid.replaceChildren();
-  resultsCount.textContent = `${filteredModules.length} ${filteredModules.length === 1 ? "módulo encontrado" : "módulos encontrados"}`;
+  resultsCount.textContent = `Se muestran ${filteredModules.length} de ${modulosData.length} módulos`;
 
   if (filteredModules.length === 0) {
     const emptyState = document.createElement("div");
@@ -116,12 +201,18 @@ function renderModules() {
   filteredModules.forEach((module, index) => {
     const fragment = cardTemplate.content.cloneNode(true);
     const card = fragment.querySelector(".module-card");
-    card.querySelector(".card-category").textContent = module.nombre.split(" ").slice(0, 2).join(" ");
+    const isReviewed = reviewedModuleIds.has(module.id);
+    card.dataset.moduleId = String(module.id);
+    card.classList.toggle("is-reviewed", isReviewed);
+    card.querySelector(".card-category").textContent = module.nombre.split(" ").slice(0, 3).join(" ");
     card.querySelector(".card-index").textContent = String(index + 1).padStart(2, "0");
     card.querySelector(".card-title").textContent = module.nombre;
     card.querySelector(".card-summary").textContent = module.resumen;
     card.querySelector(".card-teacher").textContent = module.docente;
     card.querySelector(".card-tool-count").textContent = `${module.herramientas.length} herramientas`;
+    const reviewStatus = card.querySelector(".card-review-status");
+    reviewStatus.hidden = !isReviewed;
+    reviewStatus.textContent = isReviewed ? "✓ Módulo repasado" : "";
 
     const openButton = card.querySelector(".card-link");
     openButton.setAttribute("aria-label", `Explorar módulo: ${module.nombre}`);
@@ -231,6 +322,7 @@ function openModule(module) {
   dialogTeacher.textContent = module.docente;
   dialogTitle.textContent = module.nombre;
   dialogSummary.textContent = module.resumen;
+  updateReviewState();
   selectTab(tabButtons[0]);
   dialog.showModal();
 }
@@ -239,7 +331,34 @@ function closeDialog() {
   if (dialog.open) dialog.close();
 }
 
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  const isDark = theme === "dark";
+  themeToggle.setAttribute("aria-label", `Cambiar a tema ${isDark ? "claro" : "oscuro"}`);
+  themeToggle.setAttribute("aria-pressed", String(!isDark));
+  themeIcon.textContent = isDark ? "☀" : "☾";
+  themeLabel.textContent = `Tema ${isDark ? "claro" : "oscuro"}`;
+  themeColorMeta.content = isDark ? "#070a15" : "#f4f7fc";
+}
+
+function initializeTheme() {
+  const storedTheme = readStorage(themeStorageKey);
+  if (storedTheme === "light" || storedTheme === "dark") {
+    hasThemeOverride = true;
+    applyTheme(storedTheme);
+    return;
+  }
+  if (storedTheme !== null) {
+    showAlert("La preferencia de tema guardada no era válida; se usará la preferencia del sistema.");
+  }
+  applyTheme(systemTheme.matches ? "light" : "dark");
+}
+
 assertModuleData(modulosData);
+initializeTheme();
+renderProgress();
+renderModules();
+
 searchInput.addEventListener("input", renderModules);
 
 filterButtons.forEach((button) => {
@@ -252,6 +371,28 @@ filterButtons.forEach((button) => {
     });
     renderModules();
   });
+});
+
+themeToggle.addEventListener("click", () => {
+  const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  applyTheme(nextTheme);
+  hasThemeOverride = true;
+  writeStorage(themeStorageKey, nextTheme, "el tema seleccionado");
+});
+
+systemTheme.addEventListener("change", (event) => {
+  if (!hasThemeOverride) applyTheme(event.matches ? "light" : "dark");
+});
+
+reviewToggle.addEventListener("click", () => {
+  if (!activeModule) return;
+  if (reviewedModuleIds.has(activeModule.id)) {
+    reviewedModuleIds.delete(activeModule.id);
+  } else {
+    reviewedModuleIds.add(activeModule.id);
+  }
+  writeStorage(progressStorageKey, JSON.stringify([...reviewedModuleIds]), "tu progreso de repaso");
+  updateReviewState();
 });
 
 tabButtons.forEach((button, index) => {
@@ -276,5 +417,3 @@ dialog.addEventListener("click", (event) => {
 dialog.addEventListener("close", () => {
   activeModule = null;
 });
-
-renderModules();

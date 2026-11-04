@@ -1,24 +1,34 @@
-# HUB de Repaso — 3.º Desarrollo de Software «B»
+# HUB 3.º Desarrollo de Software «B» — INDEL
 
-Portal educativo estático del Instituto Nacional Cantón Lourdes (INDEL) para organizar los contenidos, instrumentos, recursos y actividades de repaso de 3.º Desarrollo de Software «B». La versión v0.4 incorpora fichas completas por módulo, filtros, búsqueda y quizzes interactivos. Está construido con HTML5 semántico, CSS3 y JavaScript vainilla, sin frameworks ni dependencias de ejecución.
+Portal educativo estático del Instituto Nacional Cantón Lourdes (INDEL), preparado para la Feria de Portales. La versión 1.0 reúne los nueve módulos oficiales de Javier Mineros y Arcides Canales en fichas interactivas para consulta y repaso.
 
 ## Sitio publicado
 
 **GitHub Pages:** https://danny503pi.github.io/hub-repaso-desarrollo-software/
 
+## Características
+
+- HTML5 semántico, CSS3 y JavaScript ES6+ sin frameworks, librerías ni dependencias externas.
+- Nueve fichas con aprendizajes, instrumentos, programas, herramientas, recursos, evidencias y tres preguntas de quiz.
+- Buscador instantáneo que ignora mayúsculas y acentos, filtros por docente y contador de resultados.
+- Progreso de repaso por módulo, guardado en `localStorage` del navegador.
+- Tema claro/oscuro con preferencia inicial del sistema y elección guardada localmente.
+- Modal accesible con pestañas, enlaces externos seguros y retroalimentación inmediata en los quizzes.
+- Diseño adaptable a móviles, tabletas y escritorio.
+
 ## Integrantes y roles
 
 | Integrante | Rol | Responsabilidades |
 |---|---|---|
-| Nombre del integrante 1 | Coordinación / contenido | Organización del proyecto y revisión de contenidos |
-| Nombre del integrante 2 | Desarrollo frontend | Estructura HTML, estilos y comportamiento interactivo |
-| Nombre del integrante 3 | Documentación / pruebas | Recursos, documentación y pruebas de funcionamiento |
+| Nombre del integrante 1 | Coordinación y contenido | Coordinación, revisión de fichas y seguimiento del proyecto |
+| Nombre del integrante 2 | Desarrollo frontend | HTML, CSS, JavaScript y experiencia adaptable |
+| Nombre del integrante 3 | Documentación y pruebas | Recursos, documentación, validación y pruebas |
 
-> Reemplacen los nombres y roles de ejemplo por los datos del equipo.
+Reemplacen los nombres de ejemplo por los integrantes reales del equipo.
 
 ## Reparto de módulos
 
-| Módulo | Docente | Responsable del equipo | Estado |
+| Módulo | Docente | Responsable | Estado |
 |---|---|---|---|
 | Módulo 3.0 “Orientación de estudiantes al proceso educativo del tercer año” | Javier Mineros | Nombre | En desarrollo |
 | Módulo 3.2 Mantenimiento y aseguramiento de la operación del sistema informático | Javier Mineros | Nombre | En desarrollo |
@@ -30,21 +40,7 @@ Portal educativo estático del Instituto Nacional Cantón Lourdes (INDEL) para o
 | Modulo 3 Conversación de ingles sobre mantenimiento de sistemas informáticos | Arcides Canales | Nombre | En desarrollo |
 | Modulo 4 Puesta en marcha de la empresa en asociatividad cooperativa | Arcides Canales | Nombre | En desarrollo |
 
-Actualicen los nombres y estados cuando el equipo confirme el reparto definitivo.
-
-## Fichas y evidencias
-
-Los módulos están definidos en `data/modulos.js`. Cada ficha incluye tres aprendizajes clave, instrumentos, programas, herramientas, recursos, evidencias y preguntas de opción múltiple. Los enlaces de recursos se verificaron durante la preparación de la versión v0.4.
-
-Los enlaces de evidencia apuntan inicialmente al repositorio del HUB y sus títulos indican que la entrega del equipo está pendiente. Sustituyan esos enlaces por las URL reales de las páginas, documentos o repositorios que produzca el grupo.
-
-## Control de versiones
-
-- `main` contiene la versión estable que se publica en GitHub Pages.
-- Trabajen cada cambio en una rama descriptiva, por ejemplo `feat/ficha-html`.
-- Guarden cambios relacionados en commits pequeños con mensajes claros.
-- Revisen e integren los cambios mediante un pull request hacia `main`.
-- Cada push o integración en `main` activa el despliegue automático de Pages.
+Los responsables y estados de esta tabla son espacios para completar por el equipo.
 
 ## Estructura del proyecto
 
@@ -57,25 +53,30 @@ Los enlaces de evidencia apuntan inicialmente al repositorio del HUB y sus títu
 │   └── modulos.js
 ├── js/
 │   └── main.js
-├── .github/
-│   └── workflows/
-│       └── pages.yml
-└── README.md
+└── .github/
+    └── workflows/
+        └── pages.yml
 ```
 
 ## Ejecución local
 
-Los módulos JavaScript usan `import`, por lo que la página debe servirse mediante un servidor HTTP local y no abrirse directamente con `file://`.
+Debido a que el portal carga módulos JavaScript mediante `import`, ejecútalo desde un servidor HTTP local:
 
-1. Clona el repositorio o descarga sus archivos.
-2. Desde la carpeta del proyecto, inicia un servidor estático. Por ejemplo, con Python:
+```bash
+python -m http.server 8000
+```
 
-   ```bash
-   python -m http.server 8000
-   ```
+Después abre <http://localhost:8000>. El progreso y el tema guardados son locales al navegador y dispositivo; no se envían a un servidor.
 
-3. Abre `http://localhost:8000` en el navegador.
+## Publicación
 
-## Publicación en GitHub Pages
+GitHub Pages se despliega desde `.github/workflows/pages.yml` cada vez que se actualiza la rama `main`. El estado del último despliegue puede consultarse en la pestaña **Actions** del repositorio.
 
-GitHub Pages se configura y despliega mediante el workflow `.github/workflows/pages.yml`. Cada actualización de `main` genera una nueva publicación.
+## Registro de prompts de IA utilizados
+
+1. **Día 1 — Estructura inicial del HUB:** solicitud de la portada, estilos oscuros, tarjetas de módulos, fichas modales, filtros, búsqueda y quizzes.
+2. **Día 2 — HUB de repaso v0.4:** solicitud de fichas completas, datos estructurados y recursos para los módulos.
+3. **Integración de módulos oficiales:** solicitud de los nueve nombres de módulos y su asignación a Javier Mineros y Arcides Canales.
+4. **Día 3 — Versión final v1.0:** solicitud del tema claro/oscuro, progreso persistente, mejoras del quiz, documentación y preparación para la Feria de Portales.
+
+Las descripciones se resumen para documentar el proceso; las solicitudes originales se conservaron en el historial del proyecto.
