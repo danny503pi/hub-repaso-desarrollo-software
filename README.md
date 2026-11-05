@@ -10,7 +10,7 @@ Portal educativo estático del Instituto Nacional Cantón Lourdes (INDEL), prepa
 
 - HTML5 semántico, CSS3 y JavaScript ES6+ sin frameworks, librerías ni dependencias externas.
 - Nueve fichas con aprendizajes, instrumentos, programas, herramientas, recursos, evidencias y tres preguntas de quiz.
-- Buscador instantáneo que ignora mayúsculas y acentos, filtros por docente y contador de resultados.
+- Barra superior fija con buscador instantáneo insensible a mayúsculas y acentos, selector de docente y progreso global.
 - Progreso de repaso por módulo, guardado en `localStorage` del navegador.
 - Tema claro/oscuro con preferencia inicial del sistema y elección guardada localmente.
 - Modal accesible con pestañas, enlaces externos seguros y retroalimentación inmediata en los quizzes.
@@ -20,9 +20,10 @@ Portal educativo estático del Instituto Nacional Cantón Lourdes (INDEL), prepa
 
 | Integrante | Rol | Responsabilidades |
 |---|---|---|
-| Nombre del integrante 1 | Coordinación y contenido | Coordinación, revisión de fichas y seguimiento del proyecto |
-| Nombre del integrante 2 | Desarrollo frontend | HTML, CSS, JavaScript y experiencia adaptable |
-| Nombre del integrante 3 | Documentación y pruebas | Recursos, documentación, validación y pruebas |
+| Nombre del integrante 1 | Líder Git | Repositorio, ramas, commits y publicación |
+| Nombre del integrante 2 | Diseñador UI | Identidad visual, estilos, temas y adaptación responsive |
+| Nombre del integrante 3 | Curador de contenido | Fichas, recursos y revisión de módulos |
+| Nombre del integrante 4 | QA | Pruebas funcionales, accesibilidad y validación |
 
 Reemplacen los nombres de ejemplo por los integrantes reales del equipo.
 

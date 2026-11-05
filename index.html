@@ -23,10 +23,32 @@
           <a href="#modulos">Módulos</a>
           <a href="#acerca">Acerca del HUB</a>
         </div>
-        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Cambiar a tema claro">
-          <span class="theme-icon" aria-hidden="true">☀</span>
-          <span class="theme-label">Tema claro</span>
-        </button>
+        <div class="header-controls">
+          <label class="search-field header-search">
+            <span class="visually-hidden">Buscar por módulo, programa o herramienta</span>
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"></circle>
+              <path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+            </svg>
+            <input id="module-search" type="search" placeholder="Buscar módulos..." autocomplete="off">
+          </label>
+          <label class="teacher-select-field">
+            <span class="visually-hidden">Filtrar módulos por docente</span>
+            <select id="teacher-filter" aria-label="Filtrar por docente">
+              <option value="Todos">Todos los docentes</option>
+              <option value="Javier Mineros">Javier Mineros</option>
+              <option value="Arcides Canales">Arcides Canales</option>
+            </select>
+          </label>
+          <div class="header-progress" aria-label="Progreso global de repaso">
+            <span class="progress-label" id="progress-label" aria-live="polite">0 de 9 repasados</span>
+            <progress class="progress-bar" id="progress-bar" max="9" value="0" aria-label="0% del repaso completado">0%</progress>
+          </div>
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Cambiar a tema claro">
+            <span class="theme-icon" aria-hidden="true">☀</span>
+            <span class="theme-label">Tema claro</span>
+          </button>
+        </div>
       </nav>
     </header>
 
@@ -54,33 +76,6 @@
           </div>
           <p class="section-note">Selecciona un módulo para ver su ficha y practicar.</p>
         </div>
-
-        <div class="toolbar" role="search">
-          <label class="search-field">
-            <span class="visually-hidden">Buscar por módulo, programa o herramienta</span>
-            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
-              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"></circle>
-              <path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
-            </svg>
-            <input id="module-search" type="search" placeholder="Buscar módulo, programa o herramienta..." autocomplete="off">
-          </label>
-          <div class="filter-group" role="group" aria-label="Filtrar por docente">
-            <button class="filter-button is-active" type="button" data-teacher="Todos" aria-pressed="true">Todos</button>
-            <button class="filter-button" type="button" data-teacher="Javier Mineros" aria-pressed="false">Javier Mineros</button>
-            <button class="filter-button" type="button" data-teacher="Arcides Canales" aria-pressed="false">Arcides Canales</button>
-          </div>
-        </div>
-
-        <section class="progress-panel" aria-labelledby="progress-title">
-          <div class="progress-copy">
-            <div>
-              <p class="eyebrow">TU AVANCE</p>
-              <h3 id="progress-title">Progreso de repaso</h3>
-            </div>
-            <p class="progress-label" id="progress-label" aria-live="polite">0 de 9 módulos repasados</p>
-          </div>
-          <progress class="progress-bar" id="progress-bar" max="9" value="0" aria-label="Progreso global de repaso">0%</progress>
-        </section>
 
         <p class="results-count" id="results-count" aria-live="polite"></p>
         <div class="module-grid" id="module-grid" aria-live="polite"></div>

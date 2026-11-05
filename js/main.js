@@ -3,8 +3,8 @@ import { modulosData } from "../data/modulos.js";
 const moduleGrid = document.querySelector("#module-grid");
 const cardTemplate = document.querySelector("#module-card-template");
 const searchInput = document.querySelector("#module-search");
+const teacherFilter = document.querySelector("#teacher-filter");
 const resultsCount = document.querySelector("#results-count");
-const filterButtons = [...document.querySelectorAll(".filter-button")];
 const progressBar = document.querySelector("#progress-bar");
 const progressLabel = document.querySelector("#progress-label");
 const siteAlert = document.querySelector("#site-alert");
@@ -26,7 +26,7 @@ const themeStorageKey = "indel-hub-theme-v1";
 const moduleIds = new Set(modulosData.map(({ id }) => id));
 const systemTheme = window.matchMedia("(prefers-color-scheme: light)");
 
-let activeTeacher = "Todos";
+let activeTeacher = teacherFilter.value;
 let activeModule = null;
 let reviewedModuleIds = loadReviewedModules();
 let hasThemeOverride = false;
@@ -360,17 +360,9 @@ renderProgress();
 renderModules();
 
 searchInput.addEventListener("input", renderModules);
-
-filterButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    activeTeacher = button.dataset.teacher;
-    filterButtons.forEach((filterButton) => {
-      const isActive = filterButton === button;
-      filterButton.classList.toggle("is-active", isActive);
-      filterButton.setAttribute("aria-pressed", String(isActive));
-    });
-    renderModules();
-  });
+teacherFilter.addEventListener("change", () => {
+  activeTeacher = teacherFilter.value;
+  renderModules();
 });
 
 themeToggle.addEventListener("click", () => {
